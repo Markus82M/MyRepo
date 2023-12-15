@@ -49,9 +49,6 @@ public class WeatherController {
         this.cacheManager = cacheManager;
     }
 
-    private List<String> romanianCities = Arrays.asList("Arad", "Iasi", "Sinaia", "Tulcea", "Alba-Iulia", "Botosani", "Bacau", "Brasov", "Bucuresti", "Cluj", "Constanta", "Craiova", "Focsani", "Pitesti",
-            "Sibiu", "Buzau", "Galati", "Braila", "Vaslui", "Mamaia", "Targoviste", "Sighisoara", "Timisoara", "Satu-Mare", "Oradea", "Suceava", "Hunedoara", "Targu-Mures");
-
     private List<String> capitalCities = Arrays.asList("Vienna","Brussels","Sofia","Prague","Berlin","Copenhagen","Madrid","Tallinn","Helsinki","Paris","London","Athens","Zagreb","Budapest","Dublin","Reykjavik",
             "Rome","Vilnius","Luxembourg","Riga","Monaco","Amsterdam","Oslo","Warsaw","Lisbon","Bucharest","Moscow","Belgrade","Bratislava","Ljubljana","Stockholm","Kiev");
     @GetMapping(value = "/weathers", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
