@@ -50,7 +50,7 @@ public class WeatherController {
     }
 
     private List<String> capitalCities = Arrays.asList("Vienna","Brussels","Sofia","Prague","Berlin","Copenhagen","Madrid","Tallinn","Helsinki","Paris","London","Athens","Zagreb","Budapest","Dublin","Reykjavik",
-            "Rome","Vilnius","Luxembourg","Riga","Monaco","Amsterdam","Oslo","Warsaw","Lisbon","Bucharest","Moscow","Belgrade","Bratislava","Ljubljana","Stockholm","Kiev");
+            "Rome","Vilnius","Luxembourg","Riga","Amsterdam","Oslo","Warsaw","Lisbon","Bucharest","Moscow","Belgrade","Bratislava","Ljubljana","Stockholm","Kyiv");
     @GetMapping(value = "/weathers", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     public byte[] provideWeatherForMoreCities(@RequestBody InputCities citiesList) {
 
@@ -123,7 +123,7 @@ public class WeatherController {
         String localDir = System.getProperty("user.dir");
         String filePathDelimiter = System.getProperty("file.separator");
 
-        capitalCities.stream()
+        capitalCities.parallelStream()
                 .forEach(city -> {
                     if (tempCache != null && tempCache.get(city) != null) {
                         String[] tempTime = (String[]) tempCache.get(city).get();
@@ -252,7 +252,7 @@ public class WeatherController {
 
 
     @GetMapping(value = "/groupCitiesByFeelsLikeTemp")
-    public ResponseEntity<CityWeathersByTempResponseDTO> groupCitiesByFeelsLikeTemp(@RequestBody WeatherInputRequest weatherInputRequest,
+    public ResponseEntity<CityWeathersByTempResponseDTO> groupCitiesByFeelsLikeTemp(@RequestParam String ordering, @RequestBody WeatherInputRequest weatherInputRequest,
                                                                                     @RequestHeader("Authorization") String authorization) {
 
         CityWeathersByTempResponseDTO errorResponse = CityWeathersByTempResponseDTO.builder().build();
@@ -272,7 +272,7 @@ public class WeatherController {
         long startTime = System.currentTimeMillis();
         log.debug("StartTime all cities getWeatherByCity:{}", startTime);
 
-        CityWeathersByTempResponseDTO allCitiesFeelsLikeTemp = weatherService.groupAllCitiesByFeelsLikeTemp(weatherInputRequest);
+        CityWeathersByTempResponseDTO allCitiesFeelsLikeTemp = weatherService.groupAllCitiesByFeelsLikeTemp(weatherInputRequest, ordering);
 
         long endTime = System.currentTimeMillis();
         log.debug("EndTime all cities getWeatherByCity:{}", endTime);
@@ -294,12 +294,4 @@ public class WeatherController {
         return message;
     }
 
-    @GetMapping(value = "/getTemps")
-    public String getTemps() {
-        String weathers_2cities = Mono.zip(weatherService.getWeatherByCity("Gal12ati"), weatherService.getWeatherByCity("Brasov"),(weather1, weather2) -> {
-            String weathers = weather1.getCurrent().getTemp_c() + " " + weather2.getCurrent().getTemp_c();
-            return weathers;
-        }).block();
-        return  weathers_2cities;
-    }
 }

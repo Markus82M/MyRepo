@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: cities_weather
+server:
+  servlet:
+    context-path: /
+  port: 8082
+  config:
+    activate:
+      on-profile: dev
+
+weather.api.url: https://api.weatherapi.com/v1/current.json
+weather.api.key: d7f6e406031e4e09824130940220305
+token.api.secret: YXQgbGVhc3Qgc29tZSBzZWN1cml0eSBpcyBuZWVkZWQg
+token.api.key: 1a2b3c4d5e9876
+token.api.expiry: 3600
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+

@@ -88,8 +88,9 @@ public class WeatherService {
                         .entrySet()
                         .stream()
                         .map(this::buildTempByCities)
-                        .sorted("descending".equals(ordering) ? Comparator.comparingDouble(CityWeathersTempDTO::getTemp).reversed() :
-                                Comparator.comparingDouble(CityWeathersTempDTO::getTemp))
+                        .sorted("asc".equals(ordering) ? Comparator.comparingDouble(CityWeathersTempDTO::getTemp) :
+                                "desc".equals(ordering) ? Comparator.comparingDouble(CityWeathersTempDTO::getTemp).reversed() :
+                                        Comparator.comparingDouble(CityWeathersTempDTO::getTemp))
                         .collect(Collectors.toList());
 
         List<ErrorMessage> errorMessages = weatherByCities.stream()
@@ -118,7 +119,7 @@ public class WeatherService {
                         .city(cityWeather.getLocation().getName())
                         .feelsLike(cityWeather.getCurrent().getFeelslike_c())
                         .build())
-                .sorted(Comparator.comparingDouble(Temp::getFeelsLike).reversed())
+                .sorted(Comparator.comparing(Temp::getCity))
                 .collect(Collectors.toList());
 
         cityWeathersTempDTO.setCities(listTempCities);
@@ -126,7 +127,7 @@ public class WeatherService {
         return cityWeathersTempDTO;
     }
 
-    public CityWeathersByTempResponseDTO groupAllCitiesByFeelsLikeTemp(WeatherInputRequest weatherInputRequest) {
+    public CityWeathersByTempResponseDTO groupAllCitiesByFeelsLikeTemp(WeatherInputRequest weatherInputRequest, String ordering) {
         List<WeatherResponseDTO> weatherByCities = weatherInputRequest.getCities().parallelStream()
                 .map(city -> getWeatherByCity(city).block())
                 .collect(Collectors.toList());
@@ -138,7 +139,9 @@ public class WeatherService {
                         .entrySet()
                         .stream()
                         .map(this::buildFeelsLikeTempByCities)
-                        .sorted(Comparator.comparingDouble(CityWeathersTempDTO::getFeelsLikeTemp).reversed())
+                        .sorted("asc".equals(ordering) ? Comparator.comparingDouble(CityWeathersTempDTO::getFeelsLikeTemp) :
+                                "desc".equals(ordering) ? Comparator.comparingDouble(CityWeathersTempDTO::getFeelsLikeTemp).reversed() :
+                                        Comparator.comparingDouble(CityWeathersTempDTO::getFeelsLikeTemp))
                         .collect(Collectors.toList());
 
         List<ErrorMessage> errorMessages = weatherByCities.stream()
@@ -168,7 +171,7 @@ public class WeatherService {
                         .city(cityWeather.getLocation().getName())
                         .temp(cityWeather.getCurrent().getTemp_c())
                         .build())
-                .sorted(Comparator.comparingDouble(Temp::getTemp).reversed())
+                .sorted(Comparator.comparing(Temp::getCity))
                 .collect(Collectors.toList());
 
         cityWeathersTempDTO.setCities(listTempCities);
