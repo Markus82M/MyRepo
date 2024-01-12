@@ -50,7 +50,8 @@ public class WeatherController {
     }
 
     private List<String> capitalCities = Arrays.asList("Vienna","Brussels","Sofia","Prague","Berlin","Copenhagen","Madrid","Tallinn","Helsinki","Paris","London","Athens","Zagreb","Budapest","Dublin","Reykjavik",
-            "Rome","Vilnius","Luxembourg","Riga","Amsterdam","Oslo","Warsaw","Lisbon","Bucharest","Moscow","Belgrade","Bratislava","Ljubljana","Stockholm","Kyiv");
+            "Rome","Vilnius","Luxembourg","Riga","Amsterdam","Oslo","Warsaw","Lisbon","Bucharest","Moscow","Belgrade","Bratislava","Ljubljana","Stockholm","Kyiv","Istanbul");
+
     @GetMapping(value = "/weathers", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     public byte[] provideWeatherForMoreCities(@RequestBody InputCities citiesList) {
 
@@ -73,6 +74,8 @@ public class WeatherController {
                     cities.add(space.getBytes());
                     cities.add(newLine.getBytes());
                 });
+        // Remove last new line
+        cities.remove(cities.size() - 1);
 
         int size = 0, index = 0;
         for (byte[] element : cities) {
@@ -112,7 +115,7 @@ public class WeatherController {
     public byte[] provideWeatherImageForMoreCities() throws IOException {
 
         // Implement a throttling using Guava RateLimiter
-        RateLimiter rateLimiter = RateLimiter.create(100);
+        // RateLimiter rateLimiter = RateLimiter.create(100);
 
         List<String> citiesToSelect;
 
@@ -129,7 +132,7 @@ public class WeatherController {
                         String[] tempTime = (String[]) tempCache.get(city).get();
                         assert tempTime != null;
                         Date date = new Date(Long.parseLong(tempTime[1]));
-                        log.info("City|Temp|Time from cache:" + city + "|" + tempTime[0] + "|" + date);
+                        log.info("City|Temp|Time from cache:" + city + " | " + tempTime[0] + " | " + date);
                         if (System.currentTimeMillis() < Long.parseLong(tempTime[1]) + 300000)  // temp found in cache in newer than 5 minutes
                             cityExistingCache.put(city, tempTime[0]);
                     }
