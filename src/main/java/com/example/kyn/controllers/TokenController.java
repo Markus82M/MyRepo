@@ -19,7 +19,7 @@ public class TokenController {
         this.tokenService = tokenService;
     }
 
-    @GetMapping(value = "/getToken", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/getToken", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<TokenResponse> generateToken(@RequestBody TokenRequest request, @RequestHeader("key") String keyHeader) {
 
         TokenResponse tokenResponse = tokenService.getToken(request, keyHeader);

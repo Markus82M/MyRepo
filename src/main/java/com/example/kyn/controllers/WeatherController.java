@@ -52,7 +52,7 @@ public class WeatherController {
     private List<String> capitalCities = Arrays.asList("Vienna","Brussels","Sofia","Prague","Berlin","Copenhagen","Madrid","Tallinn","Helsinki","Paris","London","Athens","Zagreb","Budapest","Dublin","Reykjavik",
             "Rome","Vilnius","Luxembourg","Riga","Amsterdam","Oslo","Warsaw","Lisbon","Bucharest","Moscow","Belgrade","Bratislava","Ljubljana","Stockholm","Kyiv","Istanbul");
 
-    @GetMapping(value = "/weathers", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    @PostMapping(value = "/weathers", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     public byte[] provideWeatherForMoreCities(@RequestBody InputCities citiesList) {
 
         if (citiesList.getCities().isEmpty()) {
@@ -223,7 +223,7 @@ public class WeatherController {
 
     }
 
-    @GetMapping(value = "/groupCitiesByTemp")
+    @PostMapping(value = "/groupCitiesByTemp")
     public ResponseEntity<CityWeathersByTempResponseDTO> groupCitiesByTemp(@RequestParam String ordering, @RequestBody WeatherInputRequest weatherInputRequest,
                                                                            @RequestHeader("Authorization") String authorization) {
 
@@ -254,7 +254,7 @@ public class WeatherController {
     }
 
 
-    @GetMapping(value = "/groupCitiesByFeelsLikeTemp")
+    @PostMapping(value = "/groupCitiesByFeelsLikeTemp")
     public ResponseEntity<CityWeathersByTempResponseDTO> groupCitiesByFeelsLikeTemp(@RequestParam String ordering, @RequestBody WeatherInputRequest weatherInputRequest,
                                                                                     @RequestHeader("Authorization") String authorization) {
 
