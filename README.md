@@ -15,12 +15,15 @@ This can be used for multiple purposes - e.g. to find the coldest city during th
 ## Inventory
 Without any IDE the application can be started by using : "java -jar cities_weather-0.0.1-SNAPSHOT.jar" after running it in folder where jar built "cities_weather-0.0.1-SNAPSHOT.jar" is copied 
 GET http://localhost:8082/api/weathers_image -- provide real temperature for all capital cities from Europe displayed in a PNG picture; temperatures are cached for 5 minutes (configurable) and returned very fast
+
 City icon are downloaded for each city with weather sky condition (sun, clouds, rain, snow etc.) in a separate folder "cityWeatherPictures" 
+
 POST http://localhost:8082/api/weathers -- provide real temperature for a list of cities provided in payload like a list of strings : {"cities" : ["London","Berlin"]}
+
 GET http://localhost:8082/api/weathers/{city} -- provide real temperature for a city provided like a path variable
 
 GET http://localhost:8082/token/getToken -- to get a JWT token used to authenticate for below 2 services. Expects a payload like : {"user":"abc@yahoo.com","operation":"getWeather"}
+
 POST http://localhost:8082/api/groupCitiesByTemp?ordering={asc/desc} -- provide real and feels-like temperatures for a list of cities ordered based on real temperatures
+
 POST http://localhost:8082/api/groupCitiesByFeelsLikeTemp?ordering={asc/desc} -- provide real and feels-like temperatures for a list of cities ordered based on feels-like temperatures
-
-
