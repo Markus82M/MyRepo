@@ -154,11 +154,14 @@ public class WeatherController {
                     // double timeToSleep = rateLimiter.acquire();
                     // log.info("Get City " + city + " call will sleep seconds:" + timeToSleep);
                     WeatherResponseDTO cityWeather = weatherService.getWeatherByCity(city).block();
-                    String[] cityInfo = new String[2];
-                    cityInfo[0] = String.valueOf(cityWeather.getCurrent().getTemp_c());
-                    cityInfo[1] = String.valueOf(System.currentTimeMillis());
-                    cacheManager.getCache("temperatures").evictIfPresent(city);
-                    cacheManager.getCache("temperatures").put(city, cityInfo);
+                    if (cityWeather.getErrorMessage() == null) {
+                        // store city temperature in cache if was returned successfully
+                        String[] cityInfo = new String[2];
+                        cityInfo[0] = String.valueOf(cityWeather.getCurrent().getTemp_c());
+                        cityInfo[1] = String.valueOf(System.currentTimeMillis());
+                        cacheManager.getCache("temperatures").evictIfPresent(city);
+                        cacheManager.getCache("temperatures").put(city, cityInfo);
+                    }
                     return cityWeather;
                 })
                 .collect(Collectors.toList());
