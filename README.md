@@ -15,7 +15,7 @@ This can be used for multiple purposes - e.g. to find the coldest city during th
 ## Inventory
 Without any IDE the application can be started by using : "java -jar cities_weather-0.0.1-SNAPSHOT.jar" after running it in folder where built jar "cities_weather-0.0.1-SNAPSHOT.jar" is copied
 
-GET http://localhost:8082/api/weathers_image -- provide real temperature for all capital cities from Europe displayed in a PNG picture; temperatures are cached for 5 minutes (configurable) and returned very fast
+GET http://localhost:8082/api/weathers_image -- provide real temperature for all capital cities from Europe displayed in a PNG picture; temperatures are cached for 5 minutes (configurable) and returned very fast; authentication is not activated to be able to test it asap from any browser 
 
 City icon are downloaded for each city with weather sky condition (sun, clouds, rain, snow etc.) in a separate folder "cityWeatherPictures" 
 
