@@ -13,7 +13,7 @@ Also image/png with actual weather conditions (clouds, sun, rain) for every city
 This can be used for multiple purposes - e.g. to find the coldest city during the summer when we want to have one-day city-break and we don't know what city to choose to escape the heat a little bit
 
 ## Inventory
-Without any IDE the application can be started by using : "java -jar cities_weather-0.0.1-SNAPSHOT.jar" after running it in folder where jar built "cities_weather-0.0.1-SNAPSHOT.jar" is copied
+Without any IDE the application can be started by using : "java -jar cities_weather-0.0.1-SNAPSHOT.jar" after running it in folder where built jar "cities_weather-0.0.1-SNAPSHOT.jar" is copied
 
 GET http://localhost:8082/api/weathers_image -- provide real temperature for all capital cities from Europe displayed in a PNG picture; temperatures are cached for 5 minutes (configurable) and returned very fast
 
