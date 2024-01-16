@@ -6,7 +6,7 @@ This project is using a public API that provides city weather and it is offering
 
 The project aims to provide useful APIs that are grouping and showing weather for cities to support different use cases:
 1. By providing a list with more cities create a text file with every city and corresponding temperature on every line
-2. By providing a list with more cities (e.g. all european capital cities) create a image/png with all these cities ordered based on temperature
+2. By providing a list with more cities (e.g. all european capital cities) create a image/png with all these cities ordered based on temperature.
 This image can be used for multiple purposes like displaying ordered temperature for major cities on different websites like tourist websites.
 Also image/png with actual weather conditions (clouds, sun, rain) for every city is downloaded and can be used.
 3. Project is exposing APIs to group and order cities based on real temperature or based on feels-like temperature. 
