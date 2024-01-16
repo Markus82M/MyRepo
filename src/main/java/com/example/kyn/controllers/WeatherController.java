@@ -1,5 +1,6 @@
 package com.example.kyn.controllers;
 
+import com.example.kyn.dto.cache.CacheResponse;
 import com.example.kyn.dto.weather.CityWeathersByTempResponseDTO;
 import com.example.kyn.dto.weather.CurrentInfo;
 import com.example.kyn.dto.weather.ErrorMessage;
@@ -294,10 +295,25 @@ public class WeatherController {
     }
 
 
-    @GetMapping(value = "/clearCache")
-    public String clearCache() {
-        String message = Objects.requireNonNull(cacheManager.getCache("temperatures")).invalidate() ? "Cache has been cleared" : "Not cleared. No mappings were present before in the cache";
-        return message;
+    @PostMapping(value = "/clearCache")
+    public ResponseEntity<CacheResponse> clearCache(@RequestHeader("Authorization") String authorization) {
+
+        CacheResponse cacheResponse = CacheResponse.builder().build();
+
+        TokenResponse tokenResponse = tokenService.validateToken(authorization);
+        if (!tokenResponse.isValidToken()) {
+            cacheResponse.setMessage(tokenResponse.getErrorMessage());
+            cacheResponse.setCacheCleared(false);
+            return ResponseEntity.badRequest().body(cacheResponse);
+        }
+
+        String message = Objects.requireNonNull(cacheManager.getCache("temperatures")).invalidate() ?
+                "Cache has been cleared" : "Nothing to clear in the cache. No mappings were present before in the cache";
+        log.info("Cache was cleared");
+        cacheResponse.setMessage(message);
+        cacheResponse.setCacheCleared(true);
+
+        return ResponseEntity.ok(cacheResponse);
     }
 
 }

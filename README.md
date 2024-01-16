@@ -28,3 +28,7 @@ GET http://localhost:8082/token/getToken -- to get a JWT token used to authentic
 POST http://localhost:8082/api/groupCitiesByTemp?ordering={asc/desc} -- provide real and feels-like temperatures for a list of cities ordered based on real temperatures
 
 POST http://localhost:8082/api/groupCitiesByFeelsLikeTemp?ordering={asc/desc} -- provide real and feels-like temperatures for a list of cities ordered based on feels-like temperatures
+
+GET http://localhost:8082/health/check -- health check, liveness check
+
+POST http://localhost:8082/api/clearCache -- clear cache, jwt token authentication 
