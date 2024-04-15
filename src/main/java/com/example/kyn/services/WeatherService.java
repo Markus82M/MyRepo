@@ -38,24 +38,20 @@ public class WeatherService {
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder.queryParam("q", city).build())
                 .retrieve()
-                .onStatus(HttpStatus::is4xxClientError,
-                        response -> Mono.error(new ClientException("Client error. Original status code:" + response.statusCode(),
-                                response.rawStatusCode())))
                 .bodyToMono(WeatherResponseDTO.class)
                 .timeout(Duration.ofMillis(1000))
                 .doOnError(t -> {
-                    log.info("General Exception for city: " + city + " is:" + t);
+                    log.info("General Exception for city " + city + " is:" + t);
                     errorResponse.setErrorMessage(ErrorMessage.builder().city(city).errorMessage(t.getMessage()).build());
                 })
                 .doOnError(WebClientResponseException.class, (error) -> {
-                    log.info("Response Exception for city: " + city + " have StatusCode:" + error.getStatusCode()
+                    log.info("Response Exception for city " + city + " have StatusCode:" + error.getStatusCode()
                             + System.lineSeparator() + "ResponseBody:" + error.getResponseBodyAsString());
                     errorResponse.setErrorMessage(ErrorMessage.builder().city(city).errorMessage(error.getMessage()).build());
 
                 })
                 .doOnNext(response -> log.info("Call GetWeather for city " + city + " successfully. Temperature:" + response.getCurrent().getTemp_c()))
-                .retryWhen(Retry.backoff(2, Duration.ofMillis(3000))
-                        .filter(exp -> !(exp instanceof ClientException)))
+                .retryWhen(Retry.backoff(2, Duration.ofMillis(3000)))
                 .onErrorReturn(errorResponse)
                 .subscribeOn(Schedulers.boundedElastic())
                 .cache(Duration.ofMinutes(10));
