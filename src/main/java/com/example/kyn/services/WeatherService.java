@@ -54,7 +54,7 @@ public class WeatherService {
                     String tempC = response.getCurrent().getTemp_c() == -100.0 ? "n/a" : String.valueOf(response.getCurrent().getTemp_c());
                     log.info("Call GetWeather for city " + city + " successfully. Temperature:" + tempC);
                 })
-                .retryWhen(Retry.backoff(2, Duration.ofMillis(3000)))
+                .retryWhen(Retry.backoff(3, Duration.ofMillis(2000)))
                 .onErrorReturn(errorResponse)
                 .subscribeOn(Schedulers.boundedElastic())
                 .cache(Duration.ofMinutes(10));
