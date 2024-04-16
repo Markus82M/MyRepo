@@ -10,6 +10,7 @@ import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.netty.http.Http11SslContextSpec;
 import reactor.netty.http.client.HttpClient;
+import reactor.netty.resources.ConnectionProvider;
 
 import java.net.InetSocketAddress;
 import java.time.Duration;
@@ -29,10 +30,14 @@ public class WebClientConfiguration {
     @Bean
     public WebClient weatherWebClient() {
 
+        ConnectionProvider connectionProvider = ConnectionProvider.builder("connectionProvider")
+                .maxIdleTime(Duration.ofSeconds(100))
+                .build();
+
         Http11SslContextSpec http11SslContextSpec = Http11SslContextSpec.forClient();
 
         HttpClient client =
-                HttpClient.create()
+                HttpClient.create(connectionProvider)
                         .secure(spec -> spec.sslContext(http11SslContextSpec)
                                 .handshakeTimeout(Duration.ofSeconds(30))
                                 .closeNotifyFlushTimeout(Duration.ofSeconds(10))

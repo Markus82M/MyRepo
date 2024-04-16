@@ -134,8 +134,11 @@ public class WeatherController {
                         assert tempTime != null;
                         Date date = new Date(Long.parseLong(tempTime[1]));
                         log.info("City|Temp|Time from cache:" + city + " | " + tempTime[0] + " | " + date);
-                        if (System.currentTimeMillis() < Long.parseLong(tempTime[1]) + 300000)  // temp found in cache in newer than 5 minutes
+                        // temp found in cache in newer than 5 minutes and city temperature is not the default temperature
+                        if ((System.currentTimeMillis() < Long.parseLong(tempTime[1]) + 300000) &&
+                                Double.valueOf(tempTime[0]) != -100.0) {
                             cityExistingCache.put(city, tempTime[0]);
+                        }
                     }
                 });
 
@@ -212,7 +215,8 @@ public class WeatherController {
                     }
                     g2d.drawString(cityWeather.getLocation().getName(), pos.get(), y.get());
                     pos.set(pos.get() + 85);
-                    g2d.drawString(String.valueOf(cityWeather.getCurrent().getTemp_c()), pos.get(), y.get());
+                    String tempC = String.valueOf(cityWeather.getCurrent().getTemp_c() == -100.0 ? "n/a" : cityWeather.getCurrent().getTemp_c());
+                    g2d.drawString(tempC, pos.get(), y.get());
                     pos.set(60);
                     y.set(y.get() + 20);
 

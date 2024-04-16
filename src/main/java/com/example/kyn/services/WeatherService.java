@@ -50,7 +50,10 @@ public class WeatherService {
                     errorResponse.setErrorMessage(ErrorMessage.builder().city(city).errorMessage(error.getMessage()).build());
 
                 })
-                .doOnNext(response -> log.info("Call GetWeather for city " + city + " successfully. Temperature:" + response.getCurrent().getTemp_c()))
+                .doOnNext(response -> {
+                    String tempC = response.getCurrent().getTemp_c() == -100.0 ? "n/a" : String.valueOf(response.getCurrent().getTemp_c());
+                    log.info("Call GetWeather for city " + city + " successfully. Temperature:" + tempC);
+                })
                 .retryWhen(Retry.backoff(2, Duration.ofMillis(3000)))
                 .onErrorReturn(errorResponse)
                 .subscribeOn(Schedulers.boundedElastic())

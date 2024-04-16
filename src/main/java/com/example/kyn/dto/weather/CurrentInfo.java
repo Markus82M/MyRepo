@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 public class CurrentInfo {
     private String last_updated_epoch;
     private String last_updated;
-    private Double temp_c;
+    private Double temp_c = -100.0; // default value
     private String is_day;
     private Condition condition;
     private Double feelslike_c;
