@@ -56,8 +56,7 @@ public class WeatherService {
                 })
                 .retryWhen(Retry.backoff(3, Duration.ofMillis(2000)))
                 .onErrorReturn(errorResponse)
-                .subscribeOn(Schedulers.boundedElastic())
-                .cache(Duration.ofMinutes(10));
+                .subscribeOn(Schedulers.boundedElastic());
     }
 
     public byte[] getCityPicture(WeatherResponseDTO cityWeather) {

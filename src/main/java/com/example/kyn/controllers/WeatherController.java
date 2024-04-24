@@ -120,33 +120,33 @@ public class WeatherController {
 
         List<String> citiesToSelect;
 
-        Map<String, String> cityExistingCache = new HashMap<>();
+        Map<String, String> citiesExistingCache = new HashMap<>();
 
-        Cache tempCache = cacheManager.getCache("temperatures");
+        Cache temperaturesCache = cacheManager.getCache("temperatures");
 
         String localDir = System.getProperty("user.dir");
         String filePathDelimiter = System.getProperty("file.separator");
 
         capitalCities.parallelStream()
                 .forEach(city -> {
-                    if (tempCache != null && tempCache.get(city) != null) {
-                        String[] tempTime = (String[]) tempCache.get(city).get();
-                        assert tempTime != null;
-                        Date date = new Date(Long.parseLong(tempTime[1]));
-                        log.info("City|Temp|Time from cache:" + city + " | " + tempTime[0] + " | " + date);
-                        // temp found in cache in newer than 5 minutes and city temperature is not the default temperature
-                        if ((System.currentTimeMillis() < Long.parseLong(tempTime[1]) + 300000) &&
-                                Double.valueOf(tempTime[0]) != -100.0) {
-                            cityExistingCache.put(city, tempTime[0]);
+                    if (temperaturesCache != null && temperaturesCache.get(city) != null) {
+                        String[] cityTempCache = (String[]) temperaturesCache.get(city).get();
+                        assert cityTempCache != null;
+                        Date date = new Date(Long.parseLong(cityTempCache[1]));
+                        log.info("City|Temp|Time from cache:" + city + " | " + cityTempCache[0] + " | " + date);
+                        // temperature found in cache in newer than 5 minutes and city temperature is not the default temperature
+                        if ((System.currentTimeMillis() < Long.parseLong(cityTempCache[1]) + 300000) &&
+                                Double.valueOf(cityTempCache[0]) != -100.0) {
+                            citiesExistingCache.put(city, cityTempCache[0]);
                         }
                     }
                 });
 
-        if (!cityExistingCache.isEmpty()) {
-            log.info("Valid cities found in cache:" + cityExistingCache);
+        if (!citiesExistingCache.isEmpty()) {
+            log.info("Valid cities found in cache:" + citiesExistingCache);
         }
 
-        citiesToSelect = capitalCities.stream().filter(city -> !cityExistingCache.containsKey(city))
+        citiesToSelect = capitalCities.stream().filter(city -> !citiesExistingCache.containsKey(city))
                 .collect(Collectors.toList());
 
         long startTime = System.currentTimeMillis();
@@ -165,8 +165,9 @@ public class WeatherController {
                         cityInfo[1] = String.valueOf(System.currentTimeMillis());
                         cacheManager.getCache("temperatures").evictIfPresent(city);
                         cacheManager.getCache("temperatures").put(city, cityInfo);
+                        return cityWeather;
                     }
-                    return cityWeather;
+                    return null;
                 })
                 .collect(Collectors.toList());
 
@@ -175,7 +176,7 @@ public class WeatherController {
         log.info("Duration all cities for /weathers_image:{} millis", endTime - startTime);
 
         // Add in the list cities that are already present in the cache with valid temperatures
-        cityExistingCache.entrySet().stream()
+        citiesExistingCache.entrySet().stream()
                 .forEach(value -> weatherByCities.add(WeatherResponseDTO.builder()
                         .current(CurrentInfo.builder().temp_c(Double.parseDouble(value.getValue())).build())
                         .location(Location.builder().name(value.getKey()).build())
@@ -200,7 +201,6 @@ public class WeatherController {
         AtomicInteger y = new AtomicInteger(90);
 
         weatherByCities.stream()
-                .filter(cityWeather -> cityWeather.getErrorMessage() == null)
                 .sorted(Comparator.comparing(cityWeather -> Double.valueOf(cityWeather.getCurrent().getTemp_c())))
                 .forEach(cityWeather -> {
                     // save the city picture temperature - just for fun
