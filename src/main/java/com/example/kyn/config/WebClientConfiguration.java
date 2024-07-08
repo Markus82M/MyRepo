@@ -31,7 +31,9 @@ public class WebClientConfiguration {
     public WebClient weatherWebClient() {
 
         ConnectionProvider connectionProvider = ConnectionProvider.builder("connectionProvider")
-                .maxIdleTime(Duration.ofSeconds(100))
+                .disposeTimeout(Duration.ofSeconds(100))
+                .maxLifeTime(Duration.ofSeconds(100))
+                .evictInBackground(Duration.ofSeconds(1000))
                 .build();
 
         Http11SslContextSpec http11SslContextSpec = Http11SslContextSpec.forClient();

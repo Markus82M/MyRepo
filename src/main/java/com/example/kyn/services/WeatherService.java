@@ -39,7 +39,7 @@ public class WeatherService {
                 .uri(uriBuilder -> uriBuilder.queryParam("q", city).build())
                 .retrieve()
                 .bodyToMono(WeatherResponseDTO.class)
-                .timeout(Duration.ofMillis(1000))
+                .timeout(Duration.ofMillis(3000))
                 .doOnError(t -> {
                     log.info("General Exception for city " + city + " is:" + t);
                     errorResponse.setErrorMessage(ErrorMessage.builder().city(city).errorMessage(t.getMessage()).build());
